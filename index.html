@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+<title>台灣大學音遊社</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout concept: 頂部固定導覽，內容依「首頁／遊戲機台／社辦空間／幹部／活動事項」切換；遊戲與社辦頁面左側有同分類的頁面清單 */
+:root {
+  --font: 'Noto Sans TC', system-ui, -apple-system, 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+  --bg: #FFFFFF;
+  --surface: #FFFFFF;
+  --fg: #111111;
+  --muted: #555555;
+  --line: #DCDCDC;
+  --accent: #111111;
+  --on-accent: #FFFFFF;
+  --soft: #F2F2F2;
+  --c-class: #2F6B57;
+  --c-event: #A8660F;
+  --c-contest: #B4452F;
+  --c-out: #55656F;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.75;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--surface);
+}
+h1, h2, h3 { margin: 0; line-height: 1.3; text-wrap: balance; }
+p { margin: 0; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+.wrap {
+  max-width: 1040px;
+  margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* ---------- header ---------- */
+header.site {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9;
+  background: var(--surface); border-bottom: 1px solid var(--line);
+}
+.bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 24px; }
+.brand { font-weight: 700; font-size: 1.1rem; color: var(--fg); text-decoration: none; padding: 14px 0; }
+#nav { display: flex; gap: 4px; overflow-x: auto; max-width: 100%; }
+#nav a {
+  color: var(--muted); text-decoration: none; white-space: nowrap;
+  padding: 16px 12px; border-bottom: 3px solid transparent; font-weight: 500;
+}
+#nav a:hover { color: var(--fg); }
+#nav a[aria-current="page"] { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ---------- layout ---------- */
+main { padding-block: clamp(24px, 5vw, 48px) clamp(40px, 7vw, 80px); min-height: 70vh; }
+.layout { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 48px; align-items: start; }
+.content { min-width: 0; max-width: 760px; }
+.content.wide { max-width: none; }
+.side { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 76px); display: flex; flex-direction: column; border-left: 1px solid var(--line); }
+.side a { color: var(--muted); text-decoration: none; padding: 7px 14px; margin-left: -1px; border-left: 3px solid transparent; font-size: 0.95rem; }
+.side a:hover { color: var(--fg); }
+.side a.on { color: var(--accent); border-left-color: var(--accent); font-weight: 700; }
+.side .side-h { color: var(--fg); font-weight: 700; margin-bottom: 4px; }
+
+.crumb { font-size: 0.85rem; color: var(--muted); margin-bottom: 14px; }
+.crumb a { color: var(--muted); }
+h1 { font-size: clamp(1.8rem, 4.6vw, 2.5rem); font-weight: 700; }
+.intro { margin-top: 12px; color: var(--muted); max-width: 38em; }
+.title-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+
+.blk { margin-top: clamp(28px, 5vw, 44px); }
+.blk h2 { font-size: 1.2rem; font-weight: 700; padding-bottom: 8px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+.blk p + p { margin-top: 10px; }
+.list { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: 14px; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 12px; }
+.steps li::before {
+  content: counter(s); width: 2rem; height: 2rem; border-radius: 50%;
+  display: grid; place-items: center; font-size: 0.9rem; font-weight: 700;
+  background: var(--soft); color: var(--accent);
+}
+.steps b { display: block; }
+.steps span { color: var(--muted); font-size: 0.95rem; }
+.kv { margin: 0; display: grid; }
+.kv div { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 4px 16px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.kv dt { color: var(--muted); font-size: 0.92rem; }
+.kv dd { margin: 0; overflow-wrap: anywhere; }
+details { border-bottom: 1px solid var(--line); padding: 12px 0; }
+details:first-of-type { border-top: 1px solid var(--line); }
+summary { cursor: pointer; font-weight: 500; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; color: var(--accent); font-size: 1.3rem; line-height: 1.2; }
+details[open] summary::after { content: "−"; }
+details p { margin-top: 8px; color: var(--muted); }
+
+.rows { display: grid; margin-top: clamp(24px, 4vw, 36px); border-top: 1px solid var(--line); }
+.rows a {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; align-items: center;
+  padding: 16px 4px; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--fg);
+}
+.rows a:hover { background: var(--soft); }
+.rows .n { font-weight: 700; }
+.rows .d { grid-column: 1; color: var(--muted); font-size: 0.93rem; }
+.rows .go { grid-row: 1 / span 2; grid-column: 2; color: var(--accent); font-size: 0.9rem; white-space: nowrap; }
+
+.pager { display: flex; justify-content: space-between; gap: 16px; margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line); }
+.pager a { text-decoration: none; display: block; max-width: 48%; }
+.pager small { display: block; color: var(--muted); font-size: 0.8rem; }
+.pager .next { margin-left: auto; text-align: right; }
+
+.tag { display: inline-block; font-size: 0.75rem; font-weight: 500; line-height: 1.5; padding: 0 9px; border-radius: 999px; border: 1px solid var(--t, var(--muted)); color: var(--t, var(--muted)); white-space: nowrap; }
+.t-class { --t: var(--c-class); } .t-event { --t: var(--c-event); } .t-contest { --t: var(--c-contest); } .t-out { --t: var(--c-out); }
+
+/* home */
+.home-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 56px); margin-top: 32px; }
+.home-grid .blk { margin-top: 0; }
+.guide a { font-weight: 700; }
+.upc { list-style: none; margin: 0; padding: 0; }
+.upc li { display: grid; grid-template-columns: 4.6rem minmax(0, 1fr); gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.upc .dt { font-variant-numeric: tabular-nums; font-weight: 700; line-height: 1.4; }
+.upc .dt small { display: block; font-weight: 400; color: var(--muted); }
+.upc .tt { min-width: 0; }
+.upc .tt span { display: block; color: var(--muted); font-size: 0.88rem; }
+.more-link { display: inline-block; margin-top: 12px; }
+button.upc-btn { all: unset; display: block; cursor: pointer; width: 100%; }
+
+/* table */
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); margin-top: 24px; }
+table { border-collapse: collapse; width: 100%; min-width: 700px; font-size: 0.94rem; }
+th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+th { font-size: 0.8rem; color: var(--muted); font-weight: 500; background: var(--soft); }
+td.role { font-weight: 700; white-space: nowrap; }
+
+/* events */
+.ev-sec { margin-top: clamp(28px, 5vw, 40px); }
+.ev-sec h2 { font-size: 1.2rem; font-weight: 700; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.ev { list-style: none; margin: 0; padding: 0; }
+.ev li { display: grid; grid-template-columns: 4.6rem minmax(0, 1fr); gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.ev .dt { font-variant-numeric: tabular-nums; font-weight: 700; line-height: 1.4; }
+.ev .dt small { display: block; font-weight: 400; color: var(--muted); }
+.ev .h { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.ev .m { color: var(--muted); font-size: 0.9rem; }
+.ev p { margin-top: 4px; font-size: 0.93rem; }
+.ev a { font-size: 0.9rem; }
+.ev li.past { opacity: 0.6; }
+.empty { color: var(--muted); padding: 12px 0; font-size: 0.95rem; }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px 36px; color: var(--muted); font-size: 0.85rem; }
+footer .wrap { display: grid; gap: 4px; }
+
+@media (max-width: 860px) {
+  .layout, .home-grid { grid-template-columns: minmax(0, 1fr); }
+  .layout { gap: 24px; }
+  .side { position: static; flex-direction: row; gap: 8px; overflow-x: auto; border-left: 0; padding-bottom: 6px; }
+  .side a { border: 1px solid var(--line); border-radius: 999px; padding: 4px 14px; margin: 0; white-space: nowrap; }
+  .side a.on { border-color: var(--accent); background: var(--soft); }
+  .kv div { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .brand { width: 100%; padding-bottom: 0; }
+  #nav { width: 100%; }
+  #nav a { padding: 12px 10px; }
+  .pager a { max-width: 47%; }
+}
+</style>
+
+<header class="site">
+  <div class="wrap bar">
+    <a class="brand" href="#home">台灣大學音遊社</a>
+    <nav id="nav" aria-label="主選單"></nav>
+  </div>
+</header>
+
+<main class="wrap" id="app" tabindex="-1"></main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 台灣大學音遊社</span>
+    <span>文中提到的遊戲名稱與商標，屬於各自的權利人所有。</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =====================================================================
+     內容都在這一區。要改文字、新增機台、新增活動，只需要改這裡的資料。
+     標示「待補」或 XX 的地方，是範例內容，請換成社團的實際資訊。
+     ===================================================================== */
+
+  /* ---- 社團基本資料（首頁） ---- */
+  var INFO = [
+    ['社名', '台灣大學音樂遊戲社'],
+    ['成立', '2013 年'],
+    ['社辦', '<a href="https://maps.app.goo.gl/UzeMLAM4Yk9nDA9ZA" target="_blank" rel="noopener noreferrer">學生第二活動中心 903</a>'],
+    ['信箱', '<a href="ntumgc@gmail.com" target="_blank" rel="noopener noreferrer">寄信給我們</a>'],
+    ['Facebook', '<a href="https://www.facebook.com/NTUMusicgame?locale=zh_TW" target="_blank" rel="noopener noreferrer">社團官方帳號</a>'],
+    ['Thread', '<a href="https://www.threads.com/@ntumgc_" target="_blank" rel="noopener noreferrer">社團官方帳號</a>']
+  ];
+
+  /* ---- 所有機台共用的社辦使用規則（範例） ---- */
+  var MACHINE_RULES = [
+    '社員優先使用，有人排隊時請與他人協調。',
+    '不要大力拍打、踩踏或倚靠機台。',
+    '機台旁、上不要放飲料。',
+    '機台有異狀（按鍵卡住、畫面異常等）先停止使用並在dc群組@幹部。',
+    '離開前如果沒人要打請關閉遊戲程式。'
+  ];
+
+  /* ---- 遊戲機台頁面（id 開頭固定為 game-） ---- */
+  var GAMES = [
+    {
+      id: 'game-chunithm', name: 'CHUNITHM', tag: '街機',
+      blurb: '',
+      intro: '',
+      sections: [
+        { h: '機台資訊', dl: [
+          ['位置', '進門到底左邊的電腦'],
+          ['需要準備', '需要手套請自行攜帶'],
+          ['注意事項', '確認中間兩個孔都有接線才能遊玩']
+        ]},
+        { h: '開啟方法', ol: [
+          ['打開電腦桌面的名為 chunithm 的資料夾。', ''],
+          ['在 chunithm > bin 裡找到 start.bat 點擊開啟並等待進入登入畫面。', ''],
+          ['長按 enter 直到聽到提示音即為登入成功。', '']
+        ]},
+        { h: '手台特殊事項', ul: [
+          '***f1 能退出遊戲並重進；f2、f3 能投幣。',
+          '內含一部分自製譜。'
+        ]},
+        { h: '常見問題', faq: [
+          ['手揮空中感應區讀到文字？', '把輸入法切成英文。'],
+          ['***打到一半突然沒感應或卡頓、當機？', '裝置問題，可以試著按 f1 重開或重新開機，還是沒解決的話可以讓手台休息一下或是直接連絡幹部。']
+        ]}
+      ]
+    },
+    {
+      id: 'game-sdvx', name: 'SOUND VOLTEX', tag: '街機',
+      blurb: '',
+      intro: '',
+      sections: [
+        { h: '機台資訊', dl: [
+          ['位置', '進門右側的電腦'],
+          ['注意事項', '確認右側的孔有接線才能遊玩']
+        ]},
+        { h: '開啟方法', ol: [
+          ['***點擊桌面的 後點擊啟動，等待進入登入畫面。', ''],
+          ['***在按 f5 後顯示的小視窗上點擊社辦帳號 ntumg 再點擊 load，點擊 PgUp 開啟數字十二宮格後用滑鼠點擊輸入密碼：1234。', '']
+        ]},
+        { h: '手台特殊事項', ul: [
+          '點擊 PgUp 可開啟功能欄即可調整設定和搜尋歌曲。'
+        ]},
+        { h: '常見問題', faq: [
+          ['按鍵沒反應或是其他影響遊玩的問題？', '請聯絡社長來修。']
+        ]}
+      ]
+    },
+    {
+      id: 'game-ongeki', name: 'ONGEKI', tag: '街機',
+      blurb: '',
+      intro: '',
+      sections: [
+        { h: '機台資訊', dl: [
+          ['位置', '進門到底右邊側面的電腦'],
+          ['注意事項', '確認後面最大的孔有接線才能遊玩']
+        ]},
+        { h: '開啟方法', ol: [
+          ['在桌面按右鍵到顯示設定裡把畫面改成直向並把螢幕旋轉90度放置。', ''],
+          ['打開電腦桌面的名為 點我開音擊 的捷徑。', ''],
+          ['進入登入畫面後長按 enter 刷卡。', '']
+        ]},
+        { h: '常見問題', faq: [
+          ['按鍵沒反應或是其他影響遊玩的問題？', '請聯絡副社長來修。']
+        ]}
+      ]
+    },
+    {
+      id: 'game-iidx', name: 'Beatmania IIDX', tag: '街機',
+      blurb: '',
+      intro: '',
+      sections: [
+        { h: '機台資訊', dl: [
+          ['位置', '進門到底左邊的電腦'],
+          ['注意事項', '']
+        ]},
+        { h: '開啟方法', ol: [
+          ['***', '']
+        ]},
+        { h: '常見問題', faq: [
+          ['***按鍵沒反應或是其他影響遊玩的問題？', '']
+        ]}
+      ]
+    }
+  ];
+
+  /* ---- 社辦空間頁面（id 開頭固定為 room-） ---- */
+  var ROOMS = [
+    {
+      id: 'room-access', name: '位置與開放時間',
+      blurb: '社辦在哪裡、什麼時候可以進去。',
+      intro: '第一次來社辦先看這一頁，知道怎麼找到、什麼時候可以進去。',
+      sections: [
+        { h: '基本資料', dl: [
+          ['位置', '學生第二活動中心 903'],
+          ['開放時間', '學期間為 8:00~22:00；寒暑假為平日 8:00~17:00；國定假日休館。'],
+          ['進出方式', '刷學生證']
+        ]},
+        { h: '進出規則', ul: [
+          '最後離開的人負責關燈、關冷氣、關電扇、關門。',
+          '任何食物相關垃圾請丟在出門右轉到底的垃圾桶，社辦內的垃圾桶只提供給不會長蟲的垃圾。',
+          '帶朋友來參觀沒問題，但須知社員擁有優先使用機台的權利，請勿在未經協調的情況下任意擠壓其他社員的遊玩時間。'
+        ]},
+        { h: '找不到社辦怎麼辦', p: '先到學生第二活動中心一樓搭電梯到九樓，出電梯右轉經過鐵門後再右轉，沿著走廊右邊第一個門後就是了。' }
+      ]
+    },
+    {
+      id: 'room-arcade', name: '機台區',
+      blurb: '機台的擺放、排隊方式和損壞回報。',
+      intro: '這一頁說明怎麼排隊、怎麼回報問題。',
+      sections: [
+        { h: '機台一覽', links: [
+          ['game-chunithm', 'CHUNITHM', ''],
+          ['game-sdvx', 'SOUND VOLTEX', ''],
+          ['game-ongeki', 'ONGEKI', ''],
+          ['game-iidx', 'Beatmania IIDX', '']  // 開放 IIDX 頁面時再一起打開
+        ]},
+        { h: '排隊方式', ul: [
+          ['原則上輪流打，也可自行協調。']
+        ]},
+        { h: '機台壞了', ol: [
+          ['先停止使用', ''],
+          ['在dc群的 hdd疑難雜症 頻道說明機台和狀況', ''],
+          ['關閉遊戲並提醒他人暫時不要打開', '']
+        ]}
+      ]
+    },
+    {
+      id: 'room-lounge', name: '休息與討論區',
+      blurb: '中間長桌空間的說明。',
+      intro: '社辦中間長桌。',
+      sections: [
+        { h: '空間說明', p: '中間長桌可供人休息和做自己的事。' },
+        { h: '使用規則', ul: [
+          '可以帶飲水和輕食，但不要拿到機台旁邊吃。',
+          '食物垃圾自己拿去出門左轉走到底的垃圾桶丟，其餘可以丟進社辦的垃圾桶。'
+        ]},
+        { h: '可以在這裡做的事', ul: [
+          '想做甚麼都可以。',
+          '因為機台聲音較大，如果對聲音比較敏感的人推薦到外面中間的空間。'
+        ]}
+      ]
+    },
+    {
+      id: 'room-rules', name: '規則',
+      blurb: '社辦的使用規則。',
+      intro: '社辦是大家共用的空間，這一頁整理了基本的規則。',
+      sections: [
+        { h: '不可以做的事', ul: [
+          '在社辦抽菸或飲酒。',
+          '未經同意移動、拆解機台。',
+          '把社辦的器材帶離社辦。'
+        ]},
+        { h: '違規處理', p: '第一次先由幹部提醒，反覆發生會由社長與社員討論後處理。' }
+      ]
+    }
+  ];
+
+  /* ---- 幹部 ---- */
+  var OFFICERS = [
+    ['社長', '', '對外代表社團，決定社團方向，核可預算。', '社團大事、場地或對外合作。', 'Discord @ooo'],
+    ['副社長', '', '協助社長，社長不在時代理。', '不知道該找誰的時候。', 'Discord @ooo'],
+    ['財務', 'CR', '社費、活動經費與核銷。', '繳費、報帳、收據。', 'Discord @ooo'],
+    ['副財務', '小夜', '社費、活動經費與核銷。', '繳費、報帳、收據。', 'Discord @ooo'],
+    ['總務', '陳偉民', '***', '***', 'Discord @ooo']
+  ];
+
+  /* ---- 活動事項 ----
+     一般活動：{ date:'2026-12-05', title, type, time, place, note, page }
+     每週固定：{ weekly:{ day:3, from:'2026-09-09', until:'2027-01-13', except:['2026-12-23'] }, ... }
+       day：0 週日、1 週一 … 6 週六
+     type：class（社課）、event（活動）、contest（比賽）、out（校外）
+     page：可選，填頁面 id，活動事項會出現「查看相關頁面」連結 */
+  var TYPES = {
+    'class':   { label: '社課', cls: 't-class' },
+    'event':   { label: '活動', cls: 't-event' },
+    'contest': { label: '比賽', cls: 't-contest' }
+  };
+  var EVENTS = [
+    { date: '2026-12-05', title: 'TAKUMI^3娛樂賽', type: 'contest', time: '19:00', place: '二活702', note: '限社員參加' },
+    { date: '2026-12-12', title: '靈夢社課', type: 'class', time: '', place: '', note: '' },
+    { date: '2026-12-23', title: '聖誕交換禮物聚會', type: 'event', time: '', place: '社辦', note: '' },
+    { date: '2027-01-06', title: '期末社員大會', type: 'event', time: '', place: '社辦', note: '' }
+  ];
+
+  /* =====================================================================
+     以下是頁面程式。一般情況下不需要修改。
+     ===================================================================== */
+
+  var $app = document.getElementById('app');
+  var $nav = document.getElementById('nav');
+  var NAV = [
+    ['home', '首頁'], ['games', '遊戲機台'], ['rooms', '社辦空間'], ['officers', '幹部'], ['events', '活動事項']
+  ];
+  var SECTIONS = {
+    games: { title: '遊戲機台', list: GAMES, intro: '社辦裡每一台機台的使用規則。' },
+    rooms: { title: '社辦空間', list: ROOMS, intro: '社辦怎麼進、機台怎麼用，都整理在這裡。' }
+  };
+  var PAGES = {};
+  GAMES.forEach(function (g) { g.section = 'games'; PAGES[g.id] = g; });
+  ROOMS.forEach(function (r) { r.section = 'rooms'; PAGES[r.id] = r; });
+
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+  function keyOf(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function parseKey(k) { var p = k.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  var WD = ['日', '一', '二', '三', '四', '五', '六'];
+  function longDate(d) { return (d.getMonth() + 1) + ' 月 ' + d.getDate() + ' 日（' + WD[d.getDay()] + '）'; }
+
+  /* ---- 活動資料處理 ---- */
+  function eventsOn(d) {
+    var k = keyOf(d), dow = d.getDay(), out = [];
+    EVENTS.forEach(function (e) {
+      if (e.date) {
+        if (e.date === k) out.push(e);
+      } else if (e.weekly) {
+        var w = e.weekly;
+        if (w.day === dow && k >= w.from && k <= w.until && (w.except || []).indexOf(k) < 0) out.push(e);
+      }
+    });
+    out.sort(function (a, b) { return (a.time || '').localeCompare(b.time || ''); });
+    return out;
+  }
+  function upcoming(n) {
+    var res = [], t = new Date(), base = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+    for (var i = 0; i < 180 && res.length < n; i++) {
+      var d = new Date(base.getFullYear(), base.getMonth(), base.getDate() + i);
+      eventsOn(d).forEach(function (e) { if (res.length < n) res.push({ d: d, e: e }); });
+    }
+    return res;
+  }
+  function tagHtml(type) {
+    var t = TYPES[type] || TYPES['event'];
+    return '<span class="tag ' + t.cls + '">' + t.label + '</span>';
+  }
+
+  /* ---- 共用區塊 ---- */
+  function block(s) {
+    var h = '<section class="blk"><h2>' + esc(s.h) + '</h2>';
+    if (s.p) h += '<p>' + esc(s.p) + '</p>';
+    if (s.ul) h += '<ul class="list">' + s.ul.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
+    if (s.ol) h += '<ol class="steps">' + s.ol.filter(Boolean).map(function (x) { return '<li><div><b>' + esc(x[0]) + '</b><span>' + esc(x[1]) + '</span></div></li>'; }).join('') + '</ol>';
+    if (s.dl) h += '<dl class="kv">' + s.dl.map(function (x) { return '<div><dt>' + esc(x[0]) + '</dt><dd>' + esc(x[1]) + '</dd></div>'; }).join('') + '</dl>';
+    if (s.faq) h += s.faq.map(function (x) { return '<details><summary>' + esc(x[0]) + '</summary><p>' + esc(x[1]) + '</p></details>'; }).join('');
+    if (s.links) h += '<div class="rows" style="margin-top:0">' + s.links.map(function (x) {
+      return '<a href="#' + x[0] + '"><span class="n">' + esc(x[1]) + '</span><span class="d">' + esc(x[2]) + '</span><span class="go">查看 →</span></a>';
+    }).join('') + '</div>';
+    return h + '</section>';
+  }
+
+  function sideHtml(sec, cur) {
+    var S = SECTIONS[sec];
+    return '<nav class="side" aria-label="' + S.title + '頁面">' +
+      '<a class="side-h' + (cur === sec ? ' on' : '') + '" href="#' + sec + '">' + S.title + '總覽</a>' +
+      S.list.map(function (p) { return '<a' + (cur === p.id ? ' class="on" aria-current="page"' : '') + ' href="#' + p.id + '">' + esc(p.name) + '</a>'; }).join('') +
+      '</nav>';
+  }
+  function withSide(sec, cur, body) {
+    return '<div class="layout">' + sideHtml(sec, cur) + '<div class="content">' + body + '</div></div>';
+  }
+
+  /* ---- 各頁面 ---- */
+  function viewHome() {
+    var up = upcoming(4);
+    var upHtml = up.length ? '<ul class="upc">' + up.map(function (u) {
+      return '<li><div class="dt">' + (u.d.getMonth() + 1) + '/' + u.d.getDate() + '<small>週' + WD[u.d.getDay()] + '</small></div>' +
+        '<div class="tt"><b>' + esc(u.e.title) + '</b> ' + tagHtml(u.e.type) + '<span>' + esc(u.e.time || '') + (u.e.place ? '・' + esc(u.e.place) : '') + '</span></div></li>';
+    }).join('') + '</ul>' : '<p class="empty">目前沒有已排定的活動。</p>';
+
+    return '<div class="content wide">' +
+      '<h1 tabindex="-1">台灣大學音遊社</h1>' +
+      '<p class="intro">社辦怎麼用、機台怎麼開、有哪些幹部、接下來有什麼社課和活動，都整理在這裡。</p>' +
+      '<div class="home-grid">' +
+        '<div>' +
+          '<section class="blk"><h2>新社員指南</h2>' +
+          '<ol class="steps guide">' +
+            '<li><div><b>加入 Discord</b><span>臨時變動和公告都在群組裡，尚未加入的社員請聯絡幹部以獲取連結。</span></div></li>' +
+            '<li><div><a href="#room-rules">看一次社辦規則</a><span>知道哪些可以做、哪些不行。</span></div></li>' +
+            '<li><div><a href="#games">選擇有興趣的機台</a><span>每台機台都有各自不同的開法。</span></div></li>' +
+            '<li><div><a href="#officers">認識幹部</a><span>機台壞了、要繳費、想辦活動，知道要找誰。</span></div></li>' +
+            '<li><div><a href="#events">想了解社團活動請看活動事項</a><span>每次活動的時間地點都在這裡。</span></div></li>' +
+          '</ol></section>' +
+        '</div>' +
+        '<div>' +
+          '<section class="blk"><h2>接下來的活動</h2>' + upHtml +
+            '<a class="more-link" href="#events">看全部活動事項 →</a></section>' +
+          '<section class="blk"><h2>社團基本資料</h2><dl class="kv">' +
+            INFO.map(function (x) { return '<div><dt>' + esc(x[0]) + '</dt><dd>' + x[1] + '</dd></div>'; }).join('') +
+          '</dl></section>' +
+        '</div>' +
+      '</div></div>';
+  }
+
+  function viewIndex(sec) {
+    var S = SECTIONS[sec];
+    var rows = '<div class="rows">' + S.list.map(function (p) {
+      return '<a href="#' + p.id + '"><span class="n">' + esc(p.name) + (p.tag ? ' ' + '<span class="tag">' + esc(p.tag) + '</span>' : '') + '</span>' +
+        '<span class="d">' + esc(p.blurb) + '</span><span class="go">' + (sec === 'games' ? '看教學' : '查看') + ' →</span></a>';
+    }).join('') + '</div>';
+    return withSide(sec, sec,
+      '<p class="crumb"><a href="#home">首頁</a> / ' + S.title + '</p>' +
+      '<h1 tabindex="-1">' + S.title + '</h1><p class="intro">' + esc(S.intro) + '</p>' + rows);
+  }
+
+  function viewPage(id) {
+    var p = PAGES[id], S = SECTIONS[p.section], L = S.list, i = L.indexOf(p);
+    var prev = L[i - 1], next = L[i + 1];
+    var pager = '<div class="pager">' +
+      (prev ? '<a href="#' + prev.id + '"><small>上一頁</small>← ' + esc(prev.name) + '</a>' : '<span></span>') +
+      (next ? '<a class="next" href="#' + next.id + '"><small>下一頁</small>' + esc(next.name) + ' →</a>' : '') + '</div>';
+    return withSide(p.section, id,
+      '<p class="crumb"><a href="#home">首頁</a> / <a href="#' + p.section + '">' + S.title + '</a> / ' + esc(p.name) + '</p>' +
+      '<div class="title-row"><h1 tabindex="-1">' + esc(p.name) + '</h1>' + (p.tag ? '<span class="tag">' + esc(p.tag) + '</span>' : '') + '</div>' +
+      '<p class="intro">' + esc(p.intro) + '</p>' +
+      p.sections.map(block).join('') + pager);
+  }
+
+  function viewOfficers() {
+    var rows = OFFICERS.map(function (o) {
+      return '<tr><td class="role">' + esc(o[0]) + '</td><td>' + esc(o[1]) + '</td><td>' + esc(o[2]) + '</td><td>' + esc(o[3]) + '</td><td>' + esc(o[4]) + '</td></tr>';
+    }).join('');
+    return '<div class="content wide">' +
+      '<p class="crumb"><a href="#home">首頁</a> / 幹部</p>' +
+      '<h1 tabindex="-1">幹部</h1><p class="intro">有事不知道找誰，看「什麼時候找他」這一欄。</p>' +
+      '<div class="table-scroll"><table><thead><tr><th>職位</th><th>姓名</th><th>負責什麼</th><th>什麼時候找他</th><th>聯絡方式</th></tr></thead><tbody>' + rows + '</tbody></table></div></div>';
+  }
+
+  /* ---- 活動事項 ---- */
+  function evItem(e, past) {
+    var dt = e.weekly
+      ? '每週<small>週' + WD[e.weekly.day] + '</small>'
+      : (parseKey(e.date).getMonth() + 1) + '/' + parseKey(e.date).getDate() + '<small>週' + WD[parseKey(e.date).getDay()] + '</small>';
+    return '<li' + (past ? ' class="past"' : '') + '><div class="dt">' + dt + '</div><div>' +
+      '<div class="h">' + tagHtml(e.type) + '<b>' + esc(e.title) + '</b></div>' +
+      '<div class="m">' + esc(e.time || '時間待定') + (e.place ? '・' + esc(e.place) : '') + '</div>' +
+      (e.note ? '<p>' + esc(e.note) + '</p>' : '') +
+      (e.page ? '<a href="#' + e.page + '">查看相關頁面 →</a>' : '') + '</div></li>';
+  }
+  function evSection(title, list, past) {
+    return '<section class="ev-sec"><h2>' + title + '</h2>' +
+      (list.length ? '<ul class="ev">' + list.map(function (e) { return evItem(e, past); }).join('') + '</ul>' : '<p class="empty">目前沒有。</p>') +
+      '</section>';
+  }
+  function viewEvents() {
+    var today = keyOf(new Date());
+    var byDate = function (a, b) { return a.date.localeCompare(b.date) || (a.time || '').localeCompare(b.time || ''); };
+    var dated = EVENTS.filter(function (e) { return e.date; }).sort(byDate);
+    var weekly = EVENTS.filter(function (e) { return e.weekly; });
+    var coming = dated.filter(function (e) { return e.date >= today; });
+    var past = dated.filter(function (e) { return e.date < today; }).reverse();
+    return '<div class="content">' +
+      '<p class="crumb"><a href="#home">首頁</a> / 活動事項</p>' +
+      '<h1 tabindex="-1">活動事項</h1><p class="intro">社課、活動和比賽的時間地點都整理在這一頁，臨時變動請看 Discord 公告。</p>' +
+      evSection('接下來的活動', coming, false) +
+      (weekly.length ? evSection('每週固定', weekly, false) : '') +
+      (past.length ? evSection('已結束', past, true) : '') +
+      '</div>';
+  }
+
+  /* ---- 路由與繪製 ---- */
+  function route() {
+    var r = (location.hash || '').replace(/^#/, '').toLowerCase();
+    if (r === 'calendar') r = 'events';   // 舊連結相容
+    return /^[a-z0-9-]+$/.test(r) ? r : 'home';
+  }
+  function currentSection(r) {
+    if (PAGES[r]) return PAGES[r].section;
+    return r;
+  }
+  function renderNav(sec) {
+    $nav.innerHTML = NAV.map(function (n) {
+      return '<a href="#' + n[0] + '"' + (n[0] === sec ? ' aria-current="page"' : '') + '>' + n[1] + '</a>';
+    }).join('');
+  }
+  function draw() {
+    var r = route(), html;
+    if (r === 'games' || r === 'rooms') html = viewIndex(r);
+    else if (PAGES[r]) html = viewPage(r);
+    else if (r === 'officers') html = viewOfficers();
+    else if (r === 'events') html = viewEvents();
+    else { r = 'home'; html = viewHome(); }
+    $app.innerHTML = html;
+    renderNav(currentSection(r));
+  }
+  window.addEventListener('hashchange', function () {
+    draw();
+    window.scrollTo(0, 0);
+    var h = $app.querySelector('h1');
+    if (h) { try { h.focus({ preventScroll: true }); } catch (e) {} }
+  });
+
+  draw();
+})();
+</script>
+
+</html>
